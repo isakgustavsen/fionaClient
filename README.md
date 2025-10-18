@@ -131,6 +131,7 @@ pnpm build
 # Watch mode for development
 pnpm dev
 
+
 # Test (if available)
 pnpm test
 ```
@@ -148,7 +149,12 @@ pnpm test
 
 ## 📖 Documentation
 
-For detailed API documentation, visit the [Fiona Online API Documentation](https://fionaonlinexapi.docs.apiary.io/).
+### API Reference
+- **[Fiona Online API Documentation](https://fionaonlinexapi.docs.apiary.io/)** - Official API specification
+- **TSDoc Comments** - Comprehensive inline documentation in the source code with @param and @returns tags
+
+### Usage Examples
+See the [Quick Start](#-quick-start) section above for basic usage examples.
 
 ## 📄 License
 

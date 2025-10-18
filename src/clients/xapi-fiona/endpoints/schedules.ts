@@ -35,17 +35,30 @@ export interface SchedulesEndpoint {
  */
 export function createSchedulesEndpoint(client: $Fetch): SchedulesEndpoint {
   return {
-    // Get all schedules per edition
+    /**
+     * Get all schedules within a specific edition
+     * @param editionId - The unique identifier of the edition
+     * @returns Promise resolving to array of schedule list items for the edition
+     */
     getAllByEdition: (editionId: string) => {
       return client<ScheduleListItem[]>(`/edition/${editionId}/schedules`);
     },
 
-    // Get all shows per schedule
+    /**
+     * Get all shows within a specific schedule
+     * @param scheduleId - The unique identifier of the schedule
+     * @returns Promise resolving to array of show list items for the schedule
+     */
     getAllShowsByScheduleId: (scheduleId: string) => {
       return client<ShowListItem[]>(`/schedule/${scheduleId}/shows`);
     },
 
-    // Get all shows per schedule per day
+    /**
+     * Get all shows within a schedule for a specific date
+     * @param scheduleId - The unique identifier of the schedule
+     * @param showDate - The date in YYYY-MM-DD format to filter shows by
+     * @returns Promise resolving to array of show list items for the specified date
+     */
     getShowsByDate: (scheduleId: string, showDate: string) => {
       return client<ShowListItem[]>(`/schedule/${scheduleId}/shows/${showDate}`);
     },

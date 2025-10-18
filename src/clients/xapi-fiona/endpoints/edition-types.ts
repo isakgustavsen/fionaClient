@@ -60,31 +60,25 @@ export interface EditionDetail extends Edition {
   year: number;
 }
 
-// EditionTypes and Editions endpoint interface
-export interface EditionTypesEditionsEndpoint {
+// EditionTypes endpoint interface
+export interface EditionTypesEndpoint {
   // EditionType operations
   getAllEditionTypes: () => Promise<EditionType[]>;
-  getEditionTypeById: (editionTypeId: string) => Promise<EditionTypeDetail>;
-
   // Edition operations
   getAllEditionsByType: (editionTypeId: string) => Promise<EditionListItem[]>;
   getEditionById: (editionId: string) => Promise<EditionDetail>;
 }
 
 /**
- * Creates the edition types and editions endpoint functions
+ * Creates the edition types endpoint functions
  * @param client - The ofetch client instance
- * @returns Object with edition types and editions endpoint methods
+ * @returns Object with edition types endpoint methods
  */
-export function createEditionTypesEditionsEndpoint(client: $Fetch): EditionTypesEditionsEndpoint {
+export function createEditionTypesEndpoint(client: $Fetch): EditionTypesEndpoint {
   return {
     // EditionType operations
     getAllEditionTypes: () => {
       return client<EditionType[]>('/editiontypes');
-    },
-
-    getEditionTypeById: (editionTypeId: string) => {
-      return client<EditionTypeDetail>(`/editiontype/${editionTypeId}`);
     },
 
     // Edition operations

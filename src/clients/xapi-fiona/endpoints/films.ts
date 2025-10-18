@@ -159,12 +159,21 @@ export interface FilmsEndpoint {
  */
 export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
   return {
-    // Get all films in an edition
+    /**
+     * Get all films within a specific edition
+     * @param editionId - The unique identifier of the edition
+     * @returns Promise resolving to array of film list items for the edition
+     */
     getAllByEdition: (editionId: string) => {
       return client<FilmListItem[]>(`/films/${editionId}`);
     },
 
     // CRUD operations for films
+    /**
+     * Create a new film
+     * @param film - Film creation data including title, category, format, etc.
+     * @returns Promise resolving to the created film details
+     */
     create: (film: CreateFilmRequest) => {
       return client<Film>('/film', {
         method: 'POST',
@@ -172,10 +181,21 @@ export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
       });
     },
 
+    /**
+     * Get film details by ID
+     * @param filmId - The unique identifier of the film
+     * @returns Promise resolving to complete film details including credits, attachments, and metadata
+     */
     getById: (filmId: string) => {
       return client<Film>(`/film/${filmId}`);
     },
 
+    /**
+     * Update an existing film (complete object replacement required)
+     * @param filmId - The unique identifier of the film to update
+     * @param film - Updated film data (complete object required, empty fields will be cleared)
+     * @returns Promise resolving to updated film details
+     */
     updateById: (filmId: string, film: UpdateFilmRequest) => {
       return client<Film>(`/film/${filmId}`, {
         method: 'POST',
@@ -183,6 +203,11 @@ export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
       });
     },
 
+    /**
+     * Delete a film (not allowed for films with "Selected" final recommendation)
+     * @param filmId - The unique identifier of the film to delete
+     * @returns Promise resolving when deletion is complete
+     */
     deleteById: (filmId: string) => {
       return client<void>(`/film/${filmId}`, {
         method: 'DELETE',
@@ -190,14 +215,32 @@ export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
     },
 
     // Credits management
+    /**
+     * Get all credits (cast/crew) for a film
+     * @param filmId - The unique identifier of the film
+     * @returns Promise resolving to array of film credits
+     */
     getCredits: (filmId: string) => {
       return client<Credit[]>(`/film/${filmId}/credits`);
     },
 
+    /**
+     * Get a specific credit by ID
+     * @param filmId - The unique identifier of the film
+     * @param creditId - The unique identifier of the credit
+     * @returns Promise resolving to credit details
+     */
     getCreditById: (filmId: string, creditId: string) => {
       return client<Credit>(`/film/${filmId}/credit/${creditId}`);
     },
 
+    /**
+     * Update a specific credit (complete object replacement required)
+     * @param filmId - The unique identifier of the film
+     * @param creditId - The unique identifier of the credit to update
+     * @param credit - Updated credit data (complete object required)
+     * @returns Promise resolving to updated credit details
+     */
     updateCreditById: (filmId: string, creditId: string, credit: Credit) => {
       return client<Credit>(`/film/${filmId}/credit/${creditId}`, {
         method: 'POST',
@@ -205,12 +248,24 @@ export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
       });
     },
 
+    /**
+     * Delete a credit from a film
+     * @param filmId - The unique identifier of the film
+     * @param creditId - The unique identifier of the credit to delete
+     * @returns Promise resolving when deletion is complete
+     */
     deleteCreditById: (filmId: string, creditId: string) => {
       return client<void>(`/film/${filmId}/credit/${creditId}`, {
         method: 'DELETE',
       });
     },
 
+    /**
+     * Create a new credit for a film
+     * @param filmId - The unique identifier of the film
+     * @param credit - Credit creation data including person/company and role
+     * @returns Promise resolving to the created credit details
+     */
     createCredit: (filmId: string, credit: Omit<Credit, 'id'>) => {
       return client<Credit>(`/film/${filmId}/credit`, {
         method: 'POST',

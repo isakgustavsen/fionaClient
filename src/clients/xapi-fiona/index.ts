@@ -7,7 +7,7 @@ import { createCompaniesEndpoint } from './endpoints/companies';
 import { createCompanyProfilesEndpoint } from './endpoints/company-profiles';
 import { createCustomFieldsEndpoint } from './endpoints/custom-fields';
 import { createDeliveriesEndpoint } from './endpoints/deliveries';
-import { createEditionTypesEditionsEndpoint } from './endpoints/edition-types-editions';
+import { createEditionTypesEndpoint } from './endpoints/edition-types';
 import { createEntriesEndpoint } from './endpoints/entries';
 import { createExternalAccountsEndpoint } from './endpoints/external-accounts';
 import { createFilmControlEndpoint } from './endpoints/film-control';
@@ -48,7 +48,7 @@ export function createXapiFiona(options: XapiFionaOptions) {
   const companyProfiles = createCompanyProfilesEndpoint(client);
   const customFields = createCustomFieldsEndpoint(client);
   const deliveries = createDeliveriesEndpoint(client);
-  const editionTypesEditions = createEditionTypesEditionsEndpoint(client);
+  const editionTypes = createEditionTypesEndpoint(client);
   const entries = createEntriesEndpoint(client);
   const externalAccounts = createExternalAccountsEndpoint(client);
   const filmControl = createFilmControlEndpoint(client);
@@ -82,7 +82,7 @@ export function createXapiFiona(options: XapiFionaOptions) {
     companyProfiles,
     customFields,
     deliveries,
-    editionTypesEditions,
+    editionTypes,
     entries,
     externalAccounts,
     filmControl,

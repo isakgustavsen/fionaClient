@@ -1,15 +1,15 @@
 import type { $Fetch } from 'ofetch';
 
-// Base Ticket Info interface
-export interface TicketInfo {
+// Ticket update request interface
+export interface UpdateShowTicketRequest {
   id: string;
-  description: string;
+  ticketSaleId: string;
 }
 
 // Ticket Info endpoint interface
 export interface TicketInfoEndpoint {
-  // Get all ticket info (placeholder - no specific endpoint found in docs)
-  getAll: () => Promise<TicketInfo[]>;
+  // Update ticket ID for show
+  updateShowTicket: (request: UpdateShowTicketRequest) => Promise<UpdateShowTicketRequest>;
 }
 
 /**
@@ -19,9 +19,12 @@ export interface TicketInfoEndpoint {
  */
 export function createTicketInfoEndpoint(client: $Fetch): TicketInfoEndpoint {
   return {
-    // Get all ticket info (placeholder - no specific endpoint found in docs)
-    getAll: () => {
-      return client<TicketInfo[]>('/ticketinfo');
+    // Update ticket ID for show
+    updateShowTicket: (request: UpdateShowTicketRequest) => {
+      return client<UpdateShowTicketRequest>('/showticket', {
+        method: 'POST',
+        body: request,
+      });
     },
   };
 }
