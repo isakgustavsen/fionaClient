@@ -1,5 +1,5 @@
 {
-  "name": "fionaClient",
+  "name": "fiona-client",
   "version": "1.0.0",
   "description": "HTTP client wrapper using ofetch and ufo",
   "type": "module",
