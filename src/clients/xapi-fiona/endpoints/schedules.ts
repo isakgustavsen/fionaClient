@@ -22,7 +22,7 @@ export interface SchedulesEndpoint {
   getAllByEdition: (editionId: string) => Promise<ScheduleListItem[]>;
 
   // Get all shows per schedule
-  getAllShows: (scheduleId: string) => Promise<ShowListItem[]>;
+  getAllShowsByScheduleId: (scheduleId: string) => Promise<ShowListItem[]>;
 
   // Get all shows per schedule per day
   getShowsByDate: (scheduleId: string, showDate: string) => Promise<ShowListItem[]>;
@@ -41,7 +41,7 @@ export function createSchedulesEndpoint(client: $Fetch): SchedulesEndpoint {
     },
 
     // Get all shows per schedule
-    getAllShows: (scheduleId: string) => {
+    getAllShowsByScheduleId: (scheduleId: string) => {
       return client<ShowListItem[]>(`/schedule/${scheduleId}/shows`);
     },
 

@@ -7,7 +7,7 @@ A comprehensive, type-safe HTTP client library for the Fiona festival management
 ## 📦 Installation
 
 ```bash
-pnpm add fionaClient
+pnpm add fiona-client
 ```
 
 ## 🚀 Quick Start
@@ -15,7 +15,7 @@ pnpm add fionaClient
 ### Fiona Client (Main API)
 
 ```typescript
-import { createFiona } from 'fionaClient';
+import { createFiona } from 'fiona-client';
 
 const fionaClient = createFiona({
   baseUrl: 'https://yourfestivalname-a-api.fiona-online.net/v1',
@@ -30,7 +30,7 @@ const accreditations = await fionaClient.accreditations.getAllByGuestbook('guest
 ### xAPI Client (External API)
 
 ```typescript
-import { createXapiFiona } from 'fionaClient';
+import { createXapiFiona } from 'fiona-client';
 
 const xapiClient = createXapiFiona({
   baseUrl: 'https://yourorganisation-xapi.fiona-online.net/api',

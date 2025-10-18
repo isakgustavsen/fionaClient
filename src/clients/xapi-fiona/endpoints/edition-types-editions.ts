@@ -67,7 +67,7 @@ export interface EditionTypesEditionsEndpoint {
   getEditionTypeById: (editionTypeId: string) => Promise<EditionTypeDetail>;
 
   // Edition operations
-  getEditionsByEditionType: (editionTypeId: string) => Promise<EditionListItem[]>;
+  getAllEditionsByType: (editionTypeId: string) => Promise<EditionListItem[]>;
   getEditionById: (editionId: string) => Promise<EditionDetail>;
 }
 
@@ -88,7 +88,7 @@ export function createEditionTypesEditionsEndpoint(client: $Fetch): EditionTypes
     },
 
     // Edition operations
-    getEditionsByEditionType: (editionTypeId: string) => {
+    getAllEditionsByType: (editionTypeId: string) => {
       return client<EditionListItem[]>(`/editions/${editionTypeId}`);
     },
 
