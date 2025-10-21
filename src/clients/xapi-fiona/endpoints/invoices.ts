@@ -1,80 +1,23 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Owner types for invoices
-export type OwnerType = 'accreditation' | 'film';
+import type { InvoiceDetail, InvoiceLine } from "../types/invoices";
 
-// Product variant reference
-export interface ProductVariant {
-  id: string;
-  description: string;
-}
-
-// Invoice reference
-export interface Invoice {
-  id: string;
-  isFulfilled: boolean;
-  isRefunded: boolean;
-  orderNumberString: string;
-  invoiceNumberString?: string | null;
-}
-
-// Base Invoice Line interface
-export interface InvoiceLine {
-  id: string;
-  alwaysChargeVat: boolean;
-  amount: number;
-  discountPercentage: number;
-  quantity: number;
-  description: string;
-  productVariant: ProductVariant;
-  discount: number;
-  vatPercentage: number;
-  invoice: Invoice;
-}
-
-// List item version (for array responses)
-export interface InvoiceLineListItem {
-  id: string;
-  alwaysChargeVat: boolean;
-  amount: number;
-  discountPercentage: number;
-  quantity: number;
-  description: string;
-  productVariant: ProductVariant;
-  discount: number;
-  vatPercentage: number;
-  invoice: Invoice;
-}
-
-// Complete Invoice interface
-export interface InvoiceDetail {
-  id: string;
-  isFulfilled: boolean;
-  isRefunded: boolean;
-  createdOn: string;
-  dueOn: string;
-  fulfilledOn?: string | null;
-  refundedOn?: string | null;
-  droppedOn?: string | null;
-  orderNumber: number;
-  orderNumberString: string;
-  invoiceNumberString?: string | null;
-  summedAmountExcludingVat: number;
-  summedAmountVat: number;
-  summedAmountIncludingVat: number;
-  invoiceLines: Array<{
-    id: string;
-    description: string;
-  }>;
-}
+export type OwnerType = "film" | "show" | "company" | "person" | "guestbook" | "volunteer" | "other";
 
 // Invoices endpoint interface
 export interface InvoicesEndpoint {
   // Get all invoice lines for an owner
-  getInvoiceLines: (ownerType: OwnerType, ownerId: string) => Promise<InvoiceLineListItem[]>;
+  getInvoiceLines: (
+    ownerType: OwnerType,
+    ownerId: string,
+  ) => Promise<InvoiceLine[]>;
 
   // Get specific invoice line details
-  getInvoiceLineById: (ownerType: OwnerType, ownerId: string, invoiceLineId: string) => Promise<InvoiceLine>;
+  getInvoiceLineById: (
+    ownerType: OwnerType,
+    ownerId: string,
+    invoiceLineId: string,
+  ) => Promise<InvoiceLine>;
 
   // Get complete invoice details
   getInvoiceById: (invoiceId: string) => Promise<InvoiceDetail>;
@@ -88,18 +31,21 @@ export interface InvoicesEndpoint {
 export function createInvoicesEndpoint(client: $Fetch): InvoicesEndpoint {
   return {
     // Get all invoice lines for an owner
-    getInvoiceLines: (ownerType: OwnerType, ownerId: string) => {
-      return client<InvoiceLineListItem[]>(`/${ownerType}/${ownerId}/invoicelines`);
-    },
+    getInvoiceLines: async (ownerType: OwnerType, ownerId: string) =>
+      await client<InvoiceLine[]>(`/${ownerType}/${ownerId}/invoicelines`),
 
     // Get specific invoice line details
-    getInvoiceLineById: (ownerType: OwnerType, ownerId: string, invoiceLineId: string) => {
-      return client<InvoiceLine>(`/${ownerType}/${ownerId}/invoiceline/${invoiceLineId}`);
-    },
+    getInvoiceLineById: async (
+      ownerType: OwnerType,
+      ownerId: string,
+      invoiceLineId: string,
+    ) =>
+      await client<InvoiceLine>(
+        `/${ownerType}/${ownerId}/invoiceline/${invoiceLineId}`,
+      ),
 
     // Get complete invoice details
-    getInvoiceById: (invoiceId: string) => {
-      return client<InvoiceDetail>(`/invoice/${invoiceId}`);
-    },
+    getInvoiceById: async (invoiceId: string) =>
+      await client<InvoiceDetail>(`/invoice/${invoiceId}`),
   };
 }

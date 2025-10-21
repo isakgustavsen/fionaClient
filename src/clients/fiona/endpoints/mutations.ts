@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface Mutation {
   id: string;
@@ -22,9 +22,7 @@ export interface MutationsEndpoint {
  */
 export function createMutationsEndpoint(client: $Fetch): MutationsEndpoint {
   return {
-    getFromDateTime: (dateTime: string) => {
-      return client<Mutation[]>(`/mutations/${dateTime}`);
-    },
+    getFromDateTime: async (dateTime: string) =>
+      await client<Mutation[]>(`/mutations/${dateTime}`),
   };
 }
-

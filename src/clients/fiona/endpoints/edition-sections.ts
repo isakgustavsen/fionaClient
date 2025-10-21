@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface Language {
   key: string;
@@ -18,10 +18,7 @@ export interface LookupValue {
   }>;
 }
 
-export interface Image {
-  // Image properties would be defined here based on API response
-  [key: string]: unknown;
-}
+export type Image = Record<string, unknown>;
 
 export interface TextItem {
   id: string;
@@ -37,15 +34,9 @@ export interface TextItem {
   type: LookupValue;
 }
 
-export interface Publication {
-  // Publication properties would be defined here based on API response
-  [key: string]: unknown;
-}
+export type Publication = Record<string, unknown>;
 
-export interface Video {
-  // Video properties would be defined here based on API response
-  [key: string]: unknown;
-}
+export type Video = Record<string, unknown>;
 
 export interface EditionSection {
   id: string;
@@ -78,14 +69,13 @@ export interface EditionSectionsEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with edition sections endpoint methods
  */
-export function createEditionSectionsEndpoint(client: $Fetch): EditionSectionsEndpoint {
+export function createEditionSectionsEndpoint(
+  client: $Fetch,
+): EditionSectionsEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<EditionSection[]>(`/editions/${editionId}/editionsections`);
-    },
-    getById: (editionSectionId: string) => {
-      return client<EditionSection>(`/editionsections/${editionSectionId}`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<EditionSection[]>(`/editions/${editionId}/editionsections`),
+    getById: async (editionSectionId: string) =>
+      await client<EditionSection>(`/editionsections/${editionSectionId}`),
   };
 }
-

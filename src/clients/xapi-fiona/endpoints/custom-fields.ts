@@ -1,87 +1,40 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Owner types for custom fields
-export type OwnerType = 'film' | 'accreditation' | 'company' | 'person' | 'show';
+import type {
+  CustomFieldDefinition,
+  CustomFieldValue,
+} from "../types/custom-fields";
 
-// Edition type reference (only relevant for film)
-export interface EditionType {
-  id: string;
-  description: string;
-}
-
-// Custom field type reference
-export interface CustomFieldType {
-  id: string;
-  description: string;
-}
-
-// Option for select/multiselect fields
-export interface CustomFieldOption {
-  id: string;
-  key: string;
-  sortOrder: number;
-  translations: Array<{
-    label: string;
-    language: string;
-  }>;
-}
-
-// Base Custom Field Definition interface
-export interface CustomFieldDefinition {
-  id: string;
-  key: string;
-  editionType?: EditionType; // Only relevant for film
-  options: CustomFieldOption[];
-  type: CustomFieldType;
-}
-
-// List item version (for array responses)
-export interface CustomFieldDefinitionListItem {
-  id: string;
-  key: string;
-  editionType?: {
-    id: string;
-    description: string;
-  };
-  options: CustomFieldOption[];
-  type: {
-    id: string;
-    description: string;
-  };
-}
-
-// Custom Field Value interface
-export interface CustomFieldValue {
-  customField: string; // Key of the custom field
-  options?: string[] | null; // For select/multiselect fields
-  value?: string | null; // For text/numeric fields
-}
-
-// Custom field values for an owner (array response)
-export interface CustomFieldValuesResponse extends CustomFieldValue {}
-
-// Individual custom field value response (for single field operations)
-export interface CustomFieldValueResponse {
-  value?: string | string[]; // Can be single value or array for multiselect
-}
-
-// Create/Update custom field value request
-export interface UpdateCustomFieldValueRequest {
-  value?: string | string[]; // Single value or array for multiselect
-}
+type OwnerType = "film" | "accreditation" | "company" | "person" | "show";
 
 // Custom Fields endpoint interface
 export interface CustomFieldsEndpoint {
   // Get custom field definitions for an owner type
-  getDefinitions: (ownerType: OwnerType) => Promise<CustomFieldDefinitionListItem[]>;
+  getDefinitions: (ownerType: OwnerType) => Promise<CustomFieldDefinition[]>;
 
   // Get all custom field values for an owner
-  getValues: (ownerType: OwnerType, ownerId: string) => Promise<CustomFieldValuesResponse[]>;
+  getValues: (
+    ownerType: OwnerType,
+    ownerId: string,
+  ) => Promise<CustomFieldValue[]>;
 
   // CRUD operations for individual custom field values
-  getValue: (ownerType: OwnerType, ownerId: string, customFieldId: string) => Promise<CustomFieldValueResponse>;
-  updateValue: (ownerType: OwnerType, ownerId: string, customFieldId: string, value: UpdateCustomFieldValueRequest) => Promise<CustomFieldValueResponse>;
-  deleteValue: (ownerType: OwnerType, ownerId: string, customFieldId: string) => Promise<void>;
+  getValue: (
+    ownerType: OwnerType,
+    ownerId: string,
+    customFieldId: string,
+  ) => Promise<CustomFieldValue>;
+  updateValue: (
+    ownerType: OwnerType,
+    ownerId: string,
+    customFieldId: string,
+    value: CustomFieldValue,
+  ) => Promise<CustomFieldValue>;
+  deleteValue: (
+    ownerType: OwnerType,
+    ownerId: string,
+    customFieldId: string,
+  ) => Promise<void>;
 }
 
 /**
@@ -89,34 +42,53 @@ export interface CustomFieldsEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with custom fields endpoint methods
  */
-export function createCustomFieldsEndpoint(client: $Fetch): CustomFieldsEndpoint {
+export function createCustomFieldsEndpoint(
+  client: $Fetch,
+): CustomFieldsEndpoint {
   return {
     // Get custom field definitions for an owner type
-    getDefinitions: (ownerType: OwnerType) => {
-      return client<CustomFieldDefinitionListItem[]>(`/${ownerType}/customfields`);
-    },
+    getDefinitions: async (ownerType: OwnerType) =>
+      await client<CustomFieldDefinition[]>(`/${ownerType}/customfields`),
 
     // Get all custom field values for an owner
-    getValues: (ownerType: OwnerType, ownerId: string) => {
-      return client<CustomFieldValuesResponse[]>(`/${ownerType}/${ownerId}/customfields`);
-    },
+    getValues: async (ownerType: OwnerType, ownerId: string) =>
+      await client<CustomFieldValue[]>(`/${ownerType}/${ownerId}/customfields`),
 
     // CRUD operations for individual custom field values
-    getValue: (ownerType: OwnerType, ownerId: string, customFieldId: string) => {
-      return client<CustomFieldValueResponse>(`/${ownerType}/${ownerId}/customfield/${customFieldId}`);
-    },
+    getValue: async (
+      ownerType: OwnerType,
+      ownerId: string,
+      customFieldId: string,
+    ) =>
+      await client<CustomFieldValue>(
+        `/${ownerType}/${ownerId}/customfield/${customFieldId}`,
+      ),
 
-    updateValue: (ownerType: OwnerType, ownerId: string, customFieldId: string, value: UpdateCustomFieldValueRequest) => {
-      return client<CustomFieldValueResponse>(`/${ownerType}/${ownerId}/customfield/${customFieldId}`, {
-        method: 'POST',
-        body: value,
-      });
-    },
+    updateValue: async (
+      ownerType: OwnerType,
+      ownerId: string,
+      customFieldId: string,
+      value: CustomFieldValue,
+    ) =>
+      await client<CustomFieldValue>(
+        `/${ownerType}/${ownerId}/customfield/${customFieldId}`,
+        {
+          method: "POST",
+          body: value,
+        },
+      ),
 
-    deleteValue: (ownerType: OwnerType, ownerId: string, customFieldId: string) => {
-      return client<void>(`/${ownerType}/${ownerId}/customfield/${customFieldId}`, {
-        method: 'DELETE',
-      });
+    deleteValue: async (
+      ownerType: OwnerType,
+      ownerId: string,
+      customFieldId: string,
+    ) => {
+      await client<unknown>(
+        `/${ownerType}/${ownerId}/customfield/${customFieldId}`,
+        {
+          method: "DELETE",
+        },
+      );
     },
   };
 }

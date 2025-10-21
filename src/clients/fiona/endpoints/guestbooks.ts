@@ -1,4 +1,5 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
+import type { IdDescription } from "../../xapi-fiona/types/shared";
 
 // Step 1: Define basic types
 export interface GuestbookListItem {
@@ -165,13 +166,9 @@ export interface AccreditationPersonDetail {
       text: string;
     }>;
   };
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   sortedFullName: string;
-  texts: Array<{
-    [key: string]: unknown;
-  }>;
+  texts: Array<Record<string, unknown>>;
 }
 
 export interface AccreditationFilm {
@@ -232,7 +229,7 @@ export interface AccreditationBadgeListItem {
   };
 }
 
-export interface AccreditationBadge {
+export interface AccreditationBadgeOnId {
   id: string;
   documentVersion?: string | null;
   publishedOn?: string;
@@ -332,9 +329,7 @@ export interface CompanyProfile {
       text: string;
     }>;
   }>;
-  texts: Array<{
-    [key: string]: unknown;
-  }>;
+  texts: Array<Record<string, unknown>>;
 }
 
 export interface Accreditation {
@@ -348,10 +343,7 @@ export interface Accreditation {
   appointments: AccreditationAppointment[];
   arrivalOn?: string;
   badges: AccreditationBadge[];
-  company?: {
-    id: string;
-    description: string;
-  };
+  company?: IdDescription;
   companyOnBadge?: string;
   companyWithRole?: {
     id: string;
@@ -368,9 +360,7 @@ export interface Accreditation {
       }>;
     };
   };
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldOptions: Array<Record<string, unknown>>;
   customFieldValues: Array<{
     key: string;
     value: string | number | boolean | null;
@@ -394,9 +384,7 @@ export interface Accreditation {
   noPublicationOfContactDetails: boolean;
   person: AccreditationPersonDetail;
   professionOnBadge?: string | null;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   qrCodeOnBadge?: string;
   status: {
     key: string;
@@ -406,9 +394,7 @@ export interface Accreditation {
       text: string;
     }>;
   };
-  texts: Array<{
-    [key: string]: unknown;
-  }>;
+  texts: Array<Record<string, unknown>>;
   type?: {
     key: string;
     translations: Array<{
@@ -426,41 +412,47 @@ export interface Accreditation {
 export interface GuestbooksEndpoint {
   getAll: () => Promise<GuestbookListItem[]>;
   getById: (guestbookId: string) => Promise<Guestbook>;
-  getAccreditationsByGuestbook: (guestbookId: string) => Promise<AccreditationListItem[]>;
+  getAccreditationsByGuestbook: (
+    guestbookId: string,
+  ) => Promise<AccreditationListItem[]>;
   getAccreditationById: (accreditationId: string) => Promise<Accreditation>;
-  getAccreditationBadgesByGuestbook: (guestbookId: string) => Promise<AccreditationBadgeListItem[]>;
-  getAccreditationBadgeById: (accreditationBadgeId: string) => Promise<AccreditationBadge>;
-  getCompanyProfilesByGuestbook: (guestbookId: string) => Promise<CompanyProfileListItem[]>;
+  getAccreditationBadgesByGuestbook: (
+    guestbookId: string,
+  ) => Promise<AccreditationBadgeListItem[]>;
+  getAccreditationBadgeById: (
+    accreditationBadgeId: string,
+  ) => Promise<AccreditationBadgeOnId>;
+  getCompanyProfilesByGuestbook: (
+    guestbookId: string,
+  ) => Promise<CompanyProfileListItem[]>;
   getCompanyProfileById: (companyProfileId: string) => Promise<CompanyProfile>;
 }
 
 // Step 6: Implement the functions
 export function createGuestbooksEndpoint(client: $Fetch): GuestbooksEndpoint {
   return {
-    getAll: () => {
-      return client<GuestbookListItem[]>('/guestbooks');
-    },
-    getById: (guestbookId: string) => {
-      return client<Guestbook>(`/guestbooks/${guestbookId}`);
-    },
-    getAccreditationsByGuestbook: (guestbookId: string) => {
-      return client<AccreditationListItem[]>(`/guestbooks/${guestbookId}/accreditations`);
-    },
-    getAccreditationById: (accreditationId: string) => {
-      return client<Accreditation>(`/accreditations/${accreditationId}`);
-    },
-    getAccreditationBadgesByGuestbook: (guestbookId: string) => {
-      return client<AccreditationBadgeListItem[]>(`/guestbooks/${guestbookId}/accreditationbadges`);
-    },
-    getAccreditationBadgeById: (accreditationBadgeId: string) => {
-      return client<AccreditationBadge>(`/accreditationbadges/${accreditationBadgeId}`);
-    },
-    getCompanyProfilesByGuestbook: (guestbookId: string) => {
-      return client<CompanyProfileListItem[]>(`/guestbooks/${guestbookId}/companyprofiles`);
-    },
-    getCompanyProfileById: (companyProfileId: string) => {
-      return client<CompanyProfile>(`/companyprofiles/${companyProfileId}`);
-    },
+    getAll: async () => await client<GuestbookListItem[]>("/guestbooks"),
+    getById: async (guestbookId: string) =>
+      await client<Guestbook>(`/guestbooks/${guestbookId}`),
+    getAccreditationsByGuestbook: async (guestbookId: string) =>
+      await client<AccreditationListItem[]>(
+        `/guestbooks/${guestbookId}/accreditations`,
+      ),
+    getAccreditationById: async (accreditationId: string) =>
+      await client<Accreditation>(`/accreditations/${accreditationId}`),
+    getAccreditationBadgesByGuestbook: async (guestbookId: string) =>
+      await client<AccreditationBadgeListItem[]>(
+        `/guestbooks/${guestbookId}/accreditationbadges`,
+      ),
+    getAccreditationBadgeById: async (accreditationBadgeId: string) =>
+      await client<AccreditationBadgeOnId>(
+        `/accreditationbadges/${accreditationBadgeId}`,
+      ),
+    getCompanyProfilesByGuestbook: async (guestbookId: string) =>
+      await client<CompanyProfileListItem[]>(
+        `/guestbooks/${guestbookId}/companyprofiles`,
+      ),
+    getCompanyProfileById: async (companyProfileId: string) =>
+      await client<CompanyProfile>(`/companyprofiles/${companyProfileId}`),
   };
 }
-

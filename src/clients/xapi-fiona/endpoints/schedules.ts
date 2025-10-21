@@ -1,31 +1,17 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Base Schedule interface (list item version)
-export interface ScheduleListItem {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-}
-
-// Base Show interface (list item version)
-export interface ShowListItem {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-}
+import type { ListItem } from "../types/shared";
 
 // Schedules endpoint interface
 export interface SchedulesEndpoint {
   // Get all schedules per edition
-  getAllByEdition: (editionId: string) => Promise<ScheduleListItem[]>;
+  getAllByEdition: (editionId: string) => Promise<ListItem[]>;
 
   // Get all shows per schedule
-  getAllShowsByScheduleId: (scheduleId: string) => Promise<ShowListItem[]>;
+  getAllShowsByScheduleId: (scheduleId: string) => Promise<ListItem[]>;
 
   // Get all shows per schedule per day
-  getShowsByDate: (scheduleId: string, showDate: string) => Promise<ShowListItem[]>;
+  getShowsByDate: (scheduleId: string, showDate: string) => Promise<ListItem[]>;
 }
 
 /**
@@ -40,18 +26,16 @@ export function createSchedulesEndpoint(client: $Fetch): SchedulesEndpoint {
      * @param editionId - The unique identifier of the edition
      * @returns Promise resolving to array of schedule list items for the edition
      */
-    getAllByEdition: (editionId: string) => {
-      return client<ScheduleListItem[]>(`/edition/${editionId}/schedules`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<ListItem[]>(`/edition/${editionId}/schedules`),
 
     /**
      * Get all shows within a specific schedule
      * @param scheduleId - The unique identifier of the schedule
      * @returns Promise resolving to array of show list items for the schedule
      */
-    getAllShowsByScheduleId: (scheduleId: string) => {
-      return client<ShowListItem[]>(`/schedule/${scheduleId}/shows`);
-    },
+    getAllShowsByScheduleId: async (scheduleId: string) =>
+      await client<ListItem[]>(`/schedule/${scheduleId}/shows`),
 
     /**
      * Get all shows within a schedule for a specific date
@@ -59,8 +43,7 @@ export function createSchedulesEndpoint(client: $Fetch): SchedulesEndpoint {
      * @param showDate - The date in YYYY-MM-DD format to filter shows by
      * @returns Promise resolving to array of show list items for the specified date
      */
-    getShowsByDate: (scheduleId: string, showDate: string) => {
-      return client<ShowListItem[]>(`/schedule/${scheduleId}/shows/${showDate}`);
-    },
+    getShowsByDate: async (scheduleId: string, showDate: string) =>
+      await client<ListItem[]>(`/schedule/${scheduleId}/shows/${showDate}`),
   };
 }

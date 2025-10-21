@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface PersonListItem {
   id: string;
@@ -56,16 +56,10 @@ export interface Person {
   documentVersion?: string | null;
   publishedOn?: string;
   accreditations: PersonAccreditation[];
-  awards: Array<{
-    [key: string]: unknown;
-  }>;
+  awards: Array<Record<string, unknown>>;
   companies: PersonCompany[];
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
   favoriteImageAttachmentId?: string | null;
   films: PersonFilm[];
   firstName: string;
@@ -88,13 +82,9 @@ export interface Person {
       text: string;
     }>;
   };
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   sortedFullName: string;
-  texts: Array<{
-    [key: string]: unknown;
-  }>;
+  texts: Array<Record<string, unknown>>;
 }
 
 export interface PersonsEndpoint {
@@ -109,12 +99,9 @@ export interface PersonsEndpoint {
  */
 export function createPersonsEndpoint(client: $Fetch): PersonsEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<PersonListItem[]>(`/editions/${editionId}/persons`);
-    },
-    getById: (personId: string) => {
-      return client<Person>(`/persons/${personId}`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<PersonListItem[]>(`/editions/${editionId}/persons`),
+    getById: async (personId: string) =>
+      await client<Person>(`/persons/${personId}`),
   };
 }
-

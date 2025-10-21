@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface AttachmentsEndpoint {
   getUrl: (token: string) => Promise<string>;
@@ -11,9 +11,7 @@ export interface AttachmentsEndpoint {
  */
 export function createAttachmentsEndpoint(client: $Fetch): AttachmentsEndpoint {
   return {
-    getUrl: (token: string) => {
-      return client<string>(`/attachments/${token}`);
-    },
+    getUrl: async (token: string): Promise<string> =>
+      await client<string>(`/attachments/${token}`),
   };
 }
-

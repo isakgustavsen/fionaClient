@@ -1,37 +1,62 @@
 {
   "name": "fiona-client",
-  "version": "1.1.0",
-  "description": "HTTP client wrapper using ofetch and ufo",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "1.2.0",
+  "packageManager": "pnpm@10.18.1",
+  "description": "HTTP client wrapper around Fiona APIs",
+  "author": "Isak Gustavsen",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isakgustavsen/fionaClient.git"
+  },
+  "license": "ISC",
+  "keywords": [],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
+    "format": "prettier --check \"{src,test}/**/*.{ts,js,json,md,yml,html}\"",
+    "format:fix": "prettier --write \"{src,test}/**/*.{ts,js,json,md,yml,html}\"",
+    "check": "pnpm lint && pnpm format"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.18.1",
   "dependencies": {
+    "eslint-comments": "^9.9.1",
     "ofetch": "^1.4.1",
     "ufo": "^1.6.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^6.0.0",
+    "@eslint/js": "^9.38.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.38.0",
+    "eslint-config-love": "^133.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^61.1.4",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-promise": "^7.2.1",
+    "globals": "^16.4.0",
+    "jiti": "^2.6.1",
+    "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1"
   }
 }

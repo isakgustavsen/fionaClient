@@ -1,31 +1,10 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Status list value interface
-export interface StatusListValue {
-  id: string;
-  description: string;
-  key: string;
-  section: string;
-  sortOrder: number;
-  translations: Array<{
-    label: string;
-    language: string;
-  }>;
-}
-
-// Applied status list value interface
-export interface AppliedStatusListValue {
-  id: string;
-  checkedBy: {
-    description: string;
-    id: string;
-  };
-  checkedOn: string;
-  value: {
-    description: string;
-    id: string;
-  };
-}
+import type {
+  AppliedStatusListValue,
+  CreateAppliedStatusListValueRequest,
+  StatusListValue,
+} from "../types/status-lists";
 
 // Status Lists endpoint interface
 export interface StatusListsEndpoint {
@@ -33,20 +12,31 @@ export interface StatusListsEndpoint {
   getStatusListDefinitions: (ownerType: string) => Promise<StatusListValue[]>;
 
   // Get applied status list values for owner
-  getAppliedStatusListValues: (ownerType: string, ownerId: string) => Promise<AppliedStatusListValue[]>;
+  getAppliedStatusListValues: (
+    ownerType: string,
+    ownerId: string,
+  ) => Promise<AppliedStatusListValue[]>;
 
   // Get applied status list value by ID
-  getAppliedStatusListValueById: (ownerType: string, ownerId: string, statusListValueId: string) => Promise<AppliedStatusListValue>;
+  getAppliedStatusListValueById: (
+    ownerType: string,
+    ownerId: string,
+    statusListValueId: string,
+  ) => Promise<AppliedStatusListValue>;
 
   // Create new applied status list value
-  createAppliedStatusListValue: (ownerType: string, ownerId: string, request: {
-    checkedBy: { id: string };
-    checkedOn: string;
-    value: { id: string };
-  }) => Promise<AppliedStatusListValue>;
+  createAppliedStatusListValue: (
+    ownerType: string,
+    ownerId: string,
+    request: CreateAppliedStatusListValueRequest,
+  ) => Promise<AppliedStatusListValue>;
 
   // Delete applied status list value
-  deleteAppliedStatusListValue: (ownerType: string, ownerId: string, statusListValueId: string) => Promise<void>;
+  deleteAppliedStatusListValue: (
+    ownerType: string,
+    ownerId: string,
+    statusListValueId: string,
+  ) => Promise<void>;
 }
 
 /**
@@ -57,33 +47,51 @@ export interface StatusListsEndpoint {
 export function createStatusListsEndpoint(client: $Fetch): StatusListsEndpoint {
   return {
     // Get all status list definitions for owner type
-    getStatusListDefinitions: (ownerType: string) => {
-      return client<StatusListValue[]>(`/${ownerType}/statuslistvalues`);
-    },
+    getStatusListDefinitions: async (ownerType: string) =>
+      await client<StatusListValue[]>(`/${ownerType}/statuslistvalues`),
 
     // Get applied status list values for owner
-    getAppliedStatusListValues: (ownerType: string, ownerId: string) => {
-      return client<AppliedStatusListValue[]>(`/${ownerType}/${ownerId}/statuslistvalues`);
-    },
+    getAppliedStatusListValues: async (ownerType: string, ownerId: string) =>
+      await client<AppliedStatusListValue[]>(
+        `/${ownerType}/${ownerId}/statuslistvalues`,
+      ),
 
     // Get applied status list value by ID
-    getAppliedStatusListValueById: (ownerType: string, ownerId: string, statusListValueId: string) => {
-      return client<AppliedStatusListValue>(`/${ownerType}/${ownerId}/statuslistvalue/${statusListValueId}`);
-    },
+    getAppliedStatusListValueById: async (
+      ownerType: string,
+      ownerId: string,
+      statusListValueId: string,
+    ) =>
+      await client<AppliedStatusListValue>(
+        `/${ownerType}/${ownerId}/statuslistvalue/${statusListValueId}`,
+      ),
 
     // Create new applied status list value
-    createAppliedStatusListValue: (ownerType: string, ownerId: string, request) => {
-      return client<AppliedStatusListValue>(`/${ownerType}/${ownerId}/statuslistvalue`, {
-        method: 'POST',
-        body: request,
-      });
-    },
+    createAppliedStatusListValue: async (
+      ownerType: string,
+      ownerId: string,
+      request: CreateAppliedStatusListValueRequest,
+    ) =>
+      await client<AppliedStatusListValue>(
+        `/${ownerType}/${ownerId}/statuslistvalue`,
+        {
+          method: "POST",
+          body: request,
+        },
+      ),
 
     // Delete applied status list value
-    deleteAppliedStatusListValue: (ownerType: string, ownerId: string, statusListValueId: string) => {
-      return client<void>(`/${ownerType}/${ownerId}/statuslistvalue/${statusListValueId}`, {
-        method: 'DELETE',
-      });
+    deleteAppliedStatusListValue: async (
+      ownerType: string,
+      ownerId: string,
+      statusListValueId: string,
+    ) => {
+      await client<unknown>(
+        `/${ownerType}/${ownerId}/statuslistvalue/${statusListValueId}`,
+        {
+          method: "DELETE",
+        },
+      );
     },
   };
 }

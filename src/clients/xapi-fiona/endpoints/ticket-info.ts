@@ -1,15 +1,13 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Ticket update request interface
-export interface UpdateShowTicketRequest {
-  id: string;
-  ticketSaleId: string;
-}
+import type { UpdateShowTicketRequest } from "../types/ticket-info";
 
 // Ticket Info endpoint interface
 export interface TicketInfoEndpoint {
   // Update ticket ID for show
-  updateShowTicket: (request: UpdateShowTicketRequest) => Promise<UpdateShowTicketRequest>;
+  updateShowTicket: (
+    request: UpdateShowTicketRequest,
+  ) => Promise<UpdateShowTicketRequest>;
 }
 
 /**
@@ -20,11 +18,10 @@ export interface TicketInfoEndpoint {
 export function createTicketInfoEndpoint(client: $Fetch): TicketInfoEndpoint {
   return {
     // Update ticket ID for show
-    updateShowTicket: (request: UpdateShowTicketRequest) => {
-      return client<UpdateShowTicketRequest>('/showticket', {
-        method: 'POST',
+    updateShowTicket: async (request: UpdateShowTicketRequest) =>
+      await client<UpdateShowTicketRequest>("/showticket", {
+        method: "POST",
         body: request,
-      });
-    },
+      }),
   };
 }

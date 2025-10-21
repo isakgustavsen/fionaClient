@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface PerformanceListItem {
   id: string;
@@ -11,9 +11,7 @@ export interface Director {
   name: string;
 }
 
-export interface Image {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Image = Record<string, unknown>;
 
 export interface TextItem {
   id: string;
@@ -42,9 +40,7 @@ export interface TextItem {
   };
 }
 
-export interface Video {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Video = Record<string, unknown>;
 
 export interface PerformanceWithText extends PerformanceListItem {
   countriesOfProduction: Array<{
@@ -166,9 +162,7 @@ export interface Performance extends PerformanceWithText {
   artistInternationalPrefix?: string;
   artistLocal?: string;
   artistLocalPrefix?: string;
-  awards: Array<{
-    [key: string]: unknown;
-  }>;
+  awards: Array<Record<string, unknown>>;
   category?: {
     key: string;
     translations: Array<{
@@ -187,12 +181,8 @@ export interface Performance extends PerformanceWithText {
     }>;
   }>;
   credits: Credit[];
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
   disabledRestrictions: Array<{
     key: string;
     translations: Array<{
@@ -269,9 +259,7 @@ export interface Performance extends PerformanceWithText {
     endOn?: string;
     externalAccountId?: string;
   }>;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   sections: Array<{
     id: string;
     name: string;
@@ -302,9 +290,17 @@ export interface Performance extends PerformanceWithText {
 
 export interface PerformancesEndpoint {
   getAllByEdition: (editionId: string) => Promise<PerformanceListItem[]>;
-  getAllByEditionWithText: (editionId: string, textKey: string) => Promise<PerformanceWithText[]>;
-  getAllByEditionSection: (editionSectionId: string) => Promise<PerformanceListItem[]>;
-  getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => Promise<PerformanceWithText[]>;
+  getAllByEditionWithText: (
+    editionId: string,
+    textKey: string,
+  ) => Promise<PerformanceWithText[]>;
+  getAllByEditionSection: (
+    editionSectionId: string,
+  ) => Promise<PerformanceListItem[]>;
+  getAllByEditionSectionWithText: (
+    editionSectionId: string,
+    textKey: string,
+  ) => Promise<PerformanceWithText[]>;
   getById: (performanceId: string) => Promise<Performance>;
 }
 
@@ -313,23 +309,30 @@ export interface PerformancesEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with performances endpoint methods
  */
-export function createPerformancesEndpoint(client: $Fetch): PerformancesEndpoint {
+export function createPerformancesEndpoint(
+  client: $Fetch,
+): PerformancesEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<PerformanceListItem[]>(`/editions/${editionId}/performances`);
-    },
-    getAllByEditionWithText: (editionId: string, textKey: string) => {
-      return client<PerformanceWithText[]>(`/editions/${editionId}/performances/text?key=${textKey}`);
-    },
-    getAllByEditionSection: (editionSectionId: string) => {
-      return client<PerformanceListItem[]>(`/editionsections/${editionSectionId}/performances`);
-    },
-    getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => {
-      return client<PerformanceWithText[]>(`/editionsections/${editionSectionId}/performances/text?key=${textKey}`);
-    },
-    getById: (performanceId: string) => {
-      return client<Performance>(`/performances/${performanceId}`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<PerformanceListItem[]>(
+        `/editions/${editionId}/performances`,
+      ),
+    getAllByEditionWithText: async (editionId: string, textKey: string) =>
+      await client<PerformanceWithText[]>(
+        `/editions/${editionId}/performances/text?key=${textKey}`,
+      ),
+    getAllByEditionSection: async (editionSectionId: string) =>
+      await client<PerformanceListItem[]>(
+        `/editionsections/${editionSectionId}/performances`,
+      ),
+    getAllByEditionSectionWithText: async (
+      editionSectionId: string,
+      textKey: string,
+    ) =>
+      await client<PerformanceWithText[]>(
+        `/editionsections/${editionSectionId}/performances/text?key=${textKey}`,
+      ),
+    getById: async (performanceId: string) =>
+      await client<Performance>(`/performances/${performanceId}`),
   };
 }
-

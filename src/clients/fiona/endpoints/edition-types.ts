@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface ActiveEdition {
   id: string;
@@ -21,11 +21,10 @@ export interface EditionTypesEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with edition types endpoint methods
  */
-export function createEditionTypesEndpoint(client: $Fetch): EditionTypesEndpoint {
+export function createEditionTypesEndpoint(
+  client: $Fetch,
+): EditionTypesEndpoint {
   return {
-    getAll: () => {
-      return client<EditionType[]>('/editiontypes/');
-    },
+    getAll: async () => await client<EditionType[]>("/editiontypes/"),
   };
 }
-

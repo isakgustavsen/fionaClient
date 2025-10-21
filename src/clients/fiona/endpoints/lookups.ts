@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface LookupListItem {
   id: string;
@@ -32,12 +32,8 @@ export interface LookupsEndpoint {
  */
 export function createLookupsEndpoint(client: $Fetch): LookupsEndpoint {
   return {
-    getAll: () => {
-      return client<LookupListItem[]>('/lookups');
-    },
-    getValuesById: (lookupId: string) => {
-      return client<LookupValue[]>(`/lookups/${lookupId}`);
-    },
+    getAll: async () => await client<LookupListItem[]>("/lookups"),
+    getValuesById: async (lookupId: string) =>
+      await client<LookupValue[]>(`/lookups/${lookupId}`),
   };
 }
-

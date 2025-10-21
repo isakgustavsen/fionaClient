@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface FilmListItem {
   id: string;
@@ -12,9 +12,7 @@ export interface Director {
   name: string;
 }
 
-export interface Image {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Image = Record<string, unknown>;
 
 export interface TextItem {
   id: string;
@@ -43,9 +41,7 @@ export interface TextItem {
   };
 }
 
-export interface Video {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Video = Record<string, unknown>;
 
 export interface FilmWithText extends FilmListItem {
   countriesOfProduction: Array<{
@@ -238,9 +234,7 @@ export interface Film extends FilmWithText {
       text: string;
     }>;
   };
-  awards: Array<{
-    [key: string]: unknown;
-  }>;
+  awards: Array<Record<string, unknown>>;
   category?: {
     key: string;
     translations: Array<{
@@ -296,12 +290,8 @@ export interface Film extends FilmWithText {
     }>;
   }>;
   credits: Credit[];
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
   editionId: string;
   favoriteImageAttachmentId?: string;
   favoritePreviewAttachmentId?: string;
@@ -381,9 +371,7 @@ export interface Film extends FilmWithText {
     endOn?: string;
     externalAccountId?: string;
   }>;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   requestedFinancing?: number;
   screeningCopies: ScreeningCopy[];
   sections: Array<{
@@ -398,9 +386,7 @@ export interface Film extends FilmWithText {
       }>;
     };
   }>;
-  shootingLocations: Array<{
-    [key: string]: unknown;
-  }>;
+  shootingLocations: Array<Record<string, unknown>>;
   shows: Array<{
     id: string;
     description: string;
@@ -420,9 +406,15 @@ export interface Film extends FilmWithText {
 
 export interface FilmsEndpoint {
   getAllByEdition: (editionId: string) => Promise<FilmListItem[]>;
-  getAllByEditionWithText: (editionId: string, textKey: string) => Promise<FilmWithText[]>;
+  getAllByEditionWithText: (
+    editionId: string,
+    textKey: string,
+  ) => Promise<FilmWithText[]>;
   getAllByEditionSection: (editionSectionId: string) => Promise<FilmListItem[]>;
-  getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => Promise<FilmWithText[]>;
+  getAllByEditionSectionWithText: (
+    editionSectionId: string,
+    textKey: string,
+  ) => Promise<FilmWithText[]>;
   getById: (filmId: string) => Promise<Film>;
 }
 
@@ -433,21 +425,23 @@ export interface FilmsEndpoint {
  */
 export function createFilmsEndpoint(client: $Fetch): FilmsEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<FilmListItem[]>(`/editions/${editionId}/films`);
-    },
-    getAllByEditionWithText: (editionId: string, textKey: string) => {
-      return client<FilmWithText[]>(`/editions/${editionId}/films/text?key=${textKey}`);
-    },
-    getAllByEditionSection: (editionSectionId: string) => {
-      return client<FilmListItem[]>(`/editionsections/${editionSectionId}/films`);
-    },
-    getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => {
-      return client<FilmWithText[]>(`/editionsections/${editionSectionId}/films/text?key=${textKey}`);
-    },
-    getById: (filmId: string) => {
-      return client<Film>(`/films/${filmId}`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<FilmListItem[]>(`/editions/${editionId}/films`),
+    getAllByEditionWithText: async (editionId: string, textKey: string) =>
+      await client<FilmWithText[]>(
+        `/editions/${editionId}/films/text?key=${textKey}`,
+      ),
+    getAllByEditionSection: async (editionSectionId: string) =>
+      await client<FilmListItem[]>(
+        `/editionsections/${editionSectionId}/films`,
+      ),
+    getAllByEditionSectionWithText: async (
+      editionSectionId: string,
+      textKey: string,
+    ) =>
+      await client<FilmWithText[]>(
+        `/editionsections/${editionSectionId}/films/text?key=${textKey}`,
+      ),
+    getById: async (filmId: string) => await client<Film>(`/films/${filmId}`),
   };
 }
-

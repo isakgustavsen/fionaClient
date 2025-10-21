@@ -1,95 +1,37 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Accreditation profile reference
-export interface AccreditationProfile {
-  id: string;
-  description: string;
-}
-
-// Badge reference (shared with accreditations)
-export interface Badge {
-  id: string;
-  description: string;
-}
-
-// Base Guestbook interface (list item version)
-export interface GuestbookListItem {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-}
-
-// Complete Guestbook interface
-export interface Guestbook {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-  accreditationProfiles: AccreditationProfile[];
-  editions: Array<{
-    id: string;
-    description: string;
-  }>;
-  badges: Badge[];
-  endsOn: string;
-  isActive: boolean;
-  name: string;
-  startsOn: string;
-}
-
-// Meeting program participations response
-export interface MeetingProgramParticipationsResponse {
-  accreditation: {
-    description: string;
-    id: string;
-  };
-  accreditationStatus: {
-    key: string;
-    translations: Array<{
-      abbreviation?: string | null;
-      language: string;
-      text: string;
-    }>;
-  };
-  availabilityFormsClosesOn: string;
-  availabilityFormsOpensOn: string;
-  schedules: Array<{
-    id: string;
-    meetingPrograms: Array<{
-      id: string;
-      meetingRequestFormsClosesOn: string;
-      meetingRequestFormsOpensOn: string;
-      name: string;
-    }>;
-    name: string;
-  }>;
-}
-
-// Meeting program meeting request
-export interface CreateMeetingRequestRequest {
-  id?: string;
-  sortOrder: number;
-  sourceMeetingProgramParticipationId: string;
-  targetMeetingProgramParticipationId: string;
-}
+import type {
+  CreateMeetingRequestRequest,
+  Guestbook,
+  MeetingProgramParticipationsResponse,
+} from "../types/guestbooks";
+import type { ListItem } from "../types/shared";
 
 // Guestbooks endpoint interface
 export interface GuestbooksEndpoint {
   // Get all guestbooks
-  getAll: () => Promise<GuestbookListItem[]>;
+  getAll: () => Promise<ListItem[]>;
 
   // Get guestbooks by edition
-  getByEdition: (editionId: string) => Promise<GuestbookListItem[]>;
+  getByEdition: (editionId: string) => Promise<ListItem[]>;
 
   // Get guestbook details by ID
   getById: (guestbookId: string) => Promise<Guestbook>;
 
   // Get meeting program participations for account
-  getMeetingProgramParticipations: (providerName: string, externalIdentification: string, guestbookId: string) => Promise<MeetingProgramParticipationsResponse>;
+  getMeetingProgramParticipations: (
+    providerName: string,
+    externalIdentification: string,
+    guestbookId: string,
+  ) => Promise<MeetingProgramParticipationsResponse>;
 
   // Create meeting program meeting request
-  createMeetingRequest: (providerName: string, externalIdentification: string, targetParticipationId: string, request: CreateMeetingRequestRequest) => Promise<void>;
+  createMeetingRequest: (
+    providerName: string,
+    externalIdentification: string,
+    targetParticipationId: string,
+    request: CreateMeetingRequestRequest,
+  ) => Promise<void>;
 }
 
 /**
@@ -103,27 +45,23 @@ export function createGuestbooksEndpoint(client: $Fetch): GuestbooksEndpoint {
      * Get all available guestbooks
      * @returns Promise resolving to array of guestbook list items
      */
-    getAll: () => {
-      return client<GuestbookListItem[]>('/guestbooks');
-    },
+    getAll: async () => await client<ListItem[]>("/guestbooks"),
 
     /**
      * Get guestbooks associated with a specific edition
      * @param editionId - The unique identifier of the edition
      * @returns Promise resolving to array of guestbook list items for the edition
      */
-    getByEdition: (editionId: string) => {
-      return client<GuestbookListItem[]>(`/edition/${editionId}/guestbooks`);
-    },
+    getByEdition: async (editionId: string) =>
+      await client<ListItem[]>(`/edition/${editionId}/guestbooks`),
 
     /**
      * Get detailed information for a specific guestbook
      * @param guestbookId - The unique identifier of the guestbook
      * @returns Promise resolving to complete guestbook details including editions, badges, and profiles
      */
-    getById: (guestbookId: string) => {
-      return client<Guestbook>(`/guestbook/${guestbookId}`);
-    },
+    getById: async (guestbookId: string) =>
+      await client<Guestbook>(`/guestbook/${guestbookId}`),
 
     /**
      * Get meeting program participations for an account within a guestbook
@@ -132,9 +70,14 @@ export function createGuestbooksEndpoint(client: $Fetch): GuestbooksEndpoint {
      * @param guestbookId - The unique identifier of the guestbook
      * @returns Promise resolving to meeting program participations including schedules and programs
      */
-    getMeetingProgramParticipations: (providerName: string, externalIdentification: string, guestbookId: string) => {
-      return client<MeetingProgramParticipationsResponse>(`/account/${providerName}/${externalIdentification}/guestbook/${guestbookId}/meetingprogramparticipations`);
-    },
+    getMeetingProgramParticipations: async (
+      providerName: string,
+      externalIdentification: string,
+      guestbookId: string,
+    ) =>
+      await client<MeetingProgramParticipationsResponse>(
+        `/account/${providerName}/${externalIdentification}/guestbook/${guestbookId}/meetingprogramparticipations`,
+      ),
 
     /**
      * Create a new meeting request between accounts for meeting programs
@@ -144,11 +87,19 @@ export function createGuestbooksEndpoint(client: $Fetch): GuestbooksEndpoint {
      * @param request - Meeting request details including sort order and participation IDs
      * @returns Promise resolving when the meeting request is created
      */
-    createMeetingRequest: (providerName: string, externalIdentification: string, targetParticipationId: string, request: CreateMeetingRequestRequest) => {
-      return client<void>(`/account/${providerName}/${externalIdentification}/meetingprogrammeetingrequest/${targetParticipationId}`, {
-        method: 'POST',
-        body: request,
-      });
+    createMeetingRequest: async (
+      providerName: string,
+      externalIdentification: string,
+      targetParticipationId: string,
+      request: CreateMeetingRequestRequest,
+    ) => {
+      await client<unknown>(
+        `/account/${providerName}/${externalIdentification}/meetingprogrammeetingrequest/${targetParticipationId}`,
+        {
+          method: "POST",
+          body: request,
+        },
+      );
     },
   };
 }

@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface VolunteerEditionListItem {
   id: string;
@@ -26,11 +26,6 @@ export interface VolunteerListItem {
     fullName: string;
     sortedFullName: string;
   };
-}
-
-export interface VolunteerEdition {
-  id: string;
-  description: string;
 }
 
 export interface VolunteerPerson {
@@ -113,9 +108,7 @@ export interface Volunteer {
   };
   favoriteImageAttachmentId?: string | null;
   person: VolunteerPerson;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   qrCodeOnBadge: string;
   shifts: VolunteerShift[];
   volunteerEdition: {
@@ -138,18 +131,17 @@ export interface VolunteersEndpoint {
  */
 export function createVolunteersEndpoint(client: $Fetch): VolunteersEndpoint {
   return {
-    getAllEditions: () => {
-      return client<VolunteerEditionListItem[]>('/volunteereditions');
-    },
-    getEditionById: (volunteerEditionId: string) => {
-      return client<VolunteerEdition>(`/volunteereditions/${volunteerEditionId}`);
-    },
-    getAllByEdition: (volunteerEditionId: string) => {
-      return client<VolunteerListItem[]>(`/volunteereditions/${volunteerEditionId}/volunteers`);
-    },
-    getById: (volunteerId: string) => {
-      return client<Volunteer>(`/volunteers/${volunteerId}`);
-    },
+    getAllEditions: async () =>
+      await client<VolunteerEditionListItem[]>("/volunteereditions"),
+    getEditionById: async (volunteerEditionId: string) =>
+      await client<VolunteerEdition>(
+        `/volunteereditions/${volunteerEditionId}`,
+      ),
+    getAllByEdition: async (volunteerEditionId: string) =>
+      await client<VolunteerListItem[]>(
+        `/volunteereditions/${volunteerEditionId}/volunteers`,
+      ),
+    getById: async (volunteerId: string) =>
+      await client<Volunteer>(`/volunteers/${volunteerId}`),
   };
 }
-

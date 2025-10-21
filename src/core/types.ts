@@ -1,3 +1,2 @@
 // Shared types across all clients
-export type { BaseClientOptions } from './base-client';
-
+export type { BaseClientOptions } from "./base-client";

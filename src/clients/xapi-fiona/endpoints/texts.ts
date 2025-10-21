@@ -1,32 +1,6 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Text interface
-export interface Text {
-  id: string;
-  createdOn: string;
-  type: {
-    id: string;
-    key: string;
-    translations: Array<{
-      abbreviation?: string | null;
-      language: string;
-      text: string;
-    }>;
-  };
-  translations: Array<{
-    html: string;
-    language: string;
-  }>;
-}
-
-// Create text request interface
-export interface CreateTextRequest {
-  type: { id: string };
-  translations: Array<{
-    html: string;
-    language: string;
-  }>;
-}
+import type { CreateTextRequest, Text } from "../types/texts";
 
 // Texts endpoint interface
 export interface TextsEndpoint {
@@ -34,16 +8,33 @@ export interface TextsEndpoint {
   getAllByOwner: (ownerType: string, ownerId: string) => Promise<Text[]>;
 
   // Create new text for owner
-  createForOwner: (ownerType: string, ownerId: string, request: CreateTextRequest) => Promise<Text>;
+  createForOwner: (
+    ownerType: string,
+    ownerId: string,
+    request: CreateTextRequest,
+  ) => Promise<Text>;
 
   // Get text by ID
-  getById: (ownerType: string, ownerId: string, textId: string) => Promise<Text>;
+  getById: (
+    ownerType: string,
+    ownerId: string,
+    textId: string,
+  ) => Promise<Text>;
 
   // Update text
-  updateText: (ownerType: string, ownerId: string, textId: string, request: CreateTextRequest) => Promise<Text>;
+  updateText: (
+    ownerType: string,
+    ownerId: string,
+    textId: string,
+    request: CreateTextRequest,
+  ) => Promise<Text>;
 
   // Delete text
-  deleteText: (ownerType: string, ownerId: string, textId: string) => Promise<void>;
+  deleteText: (
+    ownerType: string,
+    ownerId: string,
+    textId: string,
+  ) => Promise<void>;
 }
 
 /**
@@ -54,35 +45,40 @@ export interface TextsEndpoint {
 export function createTextsEndpoint(client: $Fetch): TextsEndpoint {
   return {
     // Get all texts for owner
-    getAllByOwner: (ownerType: string, ownerId: string) => {
-      return client<Text[]>(`/${ownerType}/${ownerId}/texts`);
-    },
+    getAllByOwner: async (ownerType: string, ownerId: string) =>
+      await client<Text[]>(`/${ownerType}/${ownerId}/texts`),
 
     // Create new text for owner
-    createForOwner: (ownerType: string, ownerId: string, request: CreateTextRequest) => {
-      return client<Text>(`/${ownerType}/${ownerId}/text`, {
-        method: 'POST',
+    createForOwner: async (
+      ownerType: string,
+      ownerId: string,
+      request: CreateTextRequest,
+    ) =>
+      await client<Text>(`/${ownerType}/${ownerId}/text`, {
+        method: "POST",
         body: request,
-      });
-    },
+      }),
 
     // Get text by ID
-    getById: (ownerType: string, ownerId: string, textId: string) => {
-      return client<Text>(`/${ownerType}/${ownerId}/text/${textId}`);
-    },
+    getById: async (ownerType: string, ownerId: string, textId: string) =>
+      await client<Text>(`/${ownerType}/${ownerId}/text/${textId}`),
 
     // Update text
-    updateText: (ownerType: string, ownerId: string, textId: string, request: CreateTextRequest) => {
-      return client<Text>(`/${ownerType}/${ownerId}/text/${textId}`, {
-        method: 'POST',
+    updateText: async (
+      ownerType: string,
+      ownerId: string,
+      textId: string,
+      request: CreateTextRequest,
+    ) =>
+      await client<Text>(`/${ownerType}/${ownerId}/text/${textId}`, {
+        method: "POST",
         body: request,
-      });
-    },
+      }),
 
     // Delete text
-    deleteText: (ownerType: string, ownerId: string, textId: string) => {
-      return client<void>(`/${ownerType}/${ownerId}/text/${textId}`, {
-        method: 'DELETE',
+    deleteText: async (ownerType: string, ownerId: string, textId: string) => {
+      await client<unknown>(`/${ownerType}/${ownerId}/text/${textId}`, {
+        method: "DELETE",
       });
     },
   };

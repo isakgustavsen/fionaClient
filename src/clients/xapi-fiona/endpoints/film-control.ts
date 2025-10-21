@@ -1,42 +1,15 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Schedule reference (shared with schedules endpoint)
-export interface Schedule {
-  id: string;
-  description: string;
-}
-
-// Raid set reference (shared with raid-sets endpoint)
-export interface RaidSet {
-  id: string;
-  description: string;
-}
-
-// Base Film Control Edition interface (list item version)
-export interface FilmControlEditionListItem {
-  id: string;
-  description: string;
-}
-
-// Complete Film Control Edition interface
-export interface FilmControlEdition {
-  id: string;
-  description: string;
-  schedules: Schedule[];
-  raidSets: RaidSet[];
-  endsOn: string;
-  isActive: boolean;
-  name: string;
-  startsOn: string;
-}
+import type { FilmControlEdition } from "../types/film-control";
+import type { ListItem } from "../types/shared";
 
 // Film Control endpoint interface
 export interface FilmControlEndpoint {
   // Get all film control editions
-  getAll: () => Promise<FilmControlEditionListItem[]>;
+  getAll: () => Promise<ListItem[]>;
 
   // Get only active film control editions
-  getActive: () => Promise<FilmControlEditionListItem[]>;
+  getActive: () => Promise<ListItem[]>;
 
   // Get film control edition details
   getById: (filmControlEditionId: string) => Promise<FilmControlEdition>;
@@ -50,18 +23,16 @@ export interface FilmControlEndpoint {
 export function createFilmControlEndpoint(client: $Fetch): FilmControlEndpoint {
   return {
     // Get all film control editions
-    getAll: () => {
-      return client<FilmControlEditionListItem[]>('/filmControlEditions');
-    },
+    getAll: async () => await client<ListItem[]>("/filmControlEditions"),
 
     // Get only active film control editions
-    getActive: () => {
-      return client<FilmControlEditionListItem[]>('/filmControlEditions/active');
-    },
+    getActive: async () =>
+      await client<ListItem[]>("/filmControlEditions/active"),
 
     // Get film control edition details
-    getById: (filmControlEditionId: string) => {
-      return client<FilmControlEdition>(`/filmControlEdition/${filmControlEditionId}`);
-    },
+    getById: async (filmControlEditionId: string) =>
+      await client<FilmControlEdition>(
+        `/filmControlEdition/${filmControlEditionId}`,
+      ),
   };
 }

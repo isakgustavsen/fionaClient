@@ -1,61 +1,13 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Company reference (shared with companies endpoint)
-export interface CompanyReference {
-  id: string;
-  description: string;
-}
+import type { CompanyProfile } from "../types/company-profiles";
 
-// Guestbook reference (shared with other endpoints)
-export interface GuestbookReference {
-  id: string;
-  description: string;
-}
-
-// Company focus area reference
-export interface CompanyFocus {
-  id: string;
-  description: string;
-}
-
-// Territory reference
-export interface Territory {
-  id: string;
-  description: string;
-}
-
-// Working sector reference
-export interface WorkingSector {
-  id: string;
-  description: string;
-}
-
-// Base Company Profile interface
-export interface CompanyProfile {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-  company: CompanyReference;
-  companyFocus: CompanyFocus[];
-  guestbook: GuestbookReference;
-  mainTerritories: Territory[];
-  mainWorkingSector: WorkingSector;
-  otherWorkingSectors: WorkingSector[];
-}
-
-// List item version (for array responses)
-export interface CompanyProfileListItem {
-  id: string;
-  createdOn: string;
-  updatedOn: string;
-  description: string;
-}
+import type { ListItem } from "../types/shared";
 
 // Company Profiles endpoint interface
 export interface CompanyProfilesEndpoint {
   // Get all company profiles by guestbook
-  getAllByGuestbook: (guestbookId: string) => Promise<CompanyProfileListItem[]>;
+  getAllByGuestbook: (guestbookId: string) => Promise<ListItem[]>;
 
   // Get company profile details by ID
   getById: (companyProfileId: string) => Promise<CompanyProfile>;
@@ -66,16 +18,16 @@ export interface CompanyProfilesEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with company profiles endpoint methods
  */
-export function createCompanyProfilesEndpoint(client: $Fetch): CompanyProfilesEndpoint {
+export function createCompanyProfilesEndpoint(
+  client: $Fetch,
+): CompanyProfilesEndpoint {
   return {
     // Get all company profiles by guestbook
-    getAllByGuestbook: (guestbookId: string) => {
-      return client<CompanyProfileListItem[]>(`/guestbook/${guestbookId}/companyProfiles`);
-    },
+    getAllByGuestbook: async (guestbookId: string) =>
+      await client<ListItem[]>(`/guestbook/${guestbookId}/companyProfiles`),
 
     // Get company profile details by ID
-    getById: (companyProfileId: string) => {
-      return client<CompanyProfile>(`/companyProfile/${companyProfileId}`);
-    },
+    getById: async (companyProfileId: string) =>
+      await client<CompanyProfile>(`/companyProfile/${companyProfileId}`),
   };
 }

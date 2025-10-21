@@ -1,71 +1,19 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Edition type reference (for nested responses)
-export interface EditionTypeReference {
-  id: string;
-  description: string;
-}
-
-// Edition reference (for nested responses)
-export interface EditionReference {
-  id: string;
-  description: string;
-}
-
-// Guestbook reference (shared with other endpoints)
-export interface GuestbookReference {
-  id: string;
-  description: string;
-}
-
-// Base EditionType interface
-export interface EditionType {
-  id: string;
-  description: string;
-}
-
-// Detailed EditionType with all editions
-export interface EditionTypeDetail extends EditionType {
-  abbreviation?: string;
-  active: boolean;
-  activeEdition?: EditionReference | null;
-  editions: Edition[];
-  name: string;
-  startsInMonth: number;
-}
-
-// Base Edition interface
-export interface Edition {
-  id: string;
-  description?: string | null;
-}
-
-// List item version (for array responses)
-export interface EditionListItem extends Edition {
-  description?: string | null;
-}
-
-// Detailed Edition interface
-export interface EditionDetail extends Edition {
-  editionType: EditionTypeReference;
-  endFestivalEvent: string;
-  endFestivalYear: string;
-  guestbook?: GuestbookReference;
-  isActiveEdition: boolean;
-  name?: string;
-  round?: string;
-  sequenceNumber?: number;
-  startFestivalEvent: string;
-  startFestivalYear: string;
-  year: number;
-}
+import type {
+  EditionDetail,
+  EditionType,
+  EditionTypeDetail,
+} from "../types/edition-types";
+import type { IdDescription } from "../types/shared";
 
 // EditionTypes endpoint interface
 export interface EditionTypesEndpoint {
   // EditionType operations
   getAllEditionTypes: () => Promise<EditionType[]>;
+  getEditionTypeById: (editionTypeId: string) => Promise<EditionTypeDetail>;
   // Edition operations
-  getAllEditionsByType: (editionTypeId: string) => Promise<EditionListItem[]>;
+  getAllEditionsByType: (editionTypeId: string) => Promise<IdDescription[]>;
   getEditionById: (editionId: string) => Promise<EditionDetail>;
 }
 
@@ -74,20 +22,22 @@ export interface EditionTypesEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with edition types endpoint methods
  */
-export function createEditionTypesEndpoint(client: $Fetch): EditionTypesEndpoint {
+export function createEditionTypesEndpoint(
+  client: $Fetch,
+): EditionTypesEndpoint {
   return {
     // EditionType operations
-    getAllEditionTypes: () => {
-      return client<EditionType[]>('/editiontypes');
-    },
+    getAllEditionTypes: async () =>
+      await client<EditionType[]>("/editiontypes"),
+
+    getEditionTypeById: async (editionTypeId: string) =>
+      await client<EditionTypeDetail>(`/editiontype/${editionTypeId}`),
 
     // Edition operations
-    getAllEditionsByType: (editionTypeId: string) => {
-      return client<EditionListItem[]>(`/editions/${editionTypeId}`);
-    },
+    getAllEditionsByType: async (editionTypeId: string) =>
+      await client<IdDescription[]>(`/editions/${editionTypeId}`),
 
-    getEditionById: (editionId: string) => {
-      return client<EditionDetail>(`/edition/${editionId}`);
-    },
+    getEditionById: async (editionId: string) =>
+      await client<EditionDetail>(`/edition/${editionId}`),
   };
 }

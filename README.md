@@ -15,31 +15,31 @@ pnpm add fiona-client
 ### Fiona Client (Main API)
 
 ```typescript
-import { createFiona } from 'fiona-client';
+import { createFiona } from 'fiona-client'
 
 const fionaClient = createFiona({
   baseUrl: 'https://yourfestivalname-a-api.fiona-online.net/v1',
   key: 'your-api-key',
-});
+})
 
 // Access all endpoints with full type safety
-const films = await fionaClient.films.getAllByEdition('edition-id');
-const accreditations = await fionaClient.accreditations.getAllByGuestbook('guestbook-id');
+const films = await fionaClient.films.getAllByEdition('edition-id')
+const accreditations = await fionaClient.accreditations.getAllByGuestbook('guestbook-id')
 ```
 
 ### xAPI Client (External API)
 
 ```typescript
-import { createXapiFiona } from 'fiona-client';
+import { createXapiFiona } from 'fiona-client'
 
 const xapiClient = createXapiFiona({
   baseUrl: 'https://yourorganisation-xapi.fiona-online.net/api',
   key: 'your-xapi-key',
-});
+})
 
 // Access all xAPI endpoints with full type safety
-const account = await xapiClient.account.getDetails('provider', 'external-id');
-const appointments = await xapiClient.appointments.getByAccount('provider', 'external-id', 'guestbook-id');
+const account = await xapiClient.account.getDetails('provider', 'external-id')
+const appointments = await xapiClient.appointments.getByAccount('provider', 'external-id', 'guestbook-id')
 ```
 
 ## 📚 Complete API Coverage
@@ -131,7 +131,6 @@ pnpm build
 # Watch mode for development
 pnpm dev
 
-
 # Test (if available)
 pnpm test
 ```
@@ -159,4 +158,3 @@ See the [Quick Start](#-quick-start) section above for basic usage examples.
 ## 📄 License
 
 ISC
-

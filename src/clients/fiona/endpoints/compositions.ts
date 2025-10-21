@@ -1,4 +1,5 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
+import type { TranslationArray } from '../types/shared'
 
 export interface CompositionListItem {
   id: string;
@@ -6,9 +7,7 @@ export interface CompositionListItem {
   sortedTitle: string;
 }
 
-export interface Image {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Image = Record<string, unknown>;
 
 export interface TextItem {
   id: string;
@@ -37,9 +36,7 @@ export interface TextItem {
   };
 }
 
-export interface Video {
-  [key: string]: unknown; // Based on API response structure
-}
+export type Video = Record<string, unknown>;
 
 export interface CompositionWithText extends CompositionListItem {
   image?: Image;
@@ -147,12 +144,8 @@ export interface Composition extends CompositionWithText {
   documentVersion?: string | null;
   publishedOn?: string;
   credits: Credit[];
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
   editionId: string;
   filmRatings: Array<{
     key: string;
@@ -163,9 +156,7 @@ export interface Composition extends CompositionWithText {
     }>;
   }>;
   parts: CompositionPart[];
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   section?: {
     id: string;
     description: string;
@@ -198,11 +189,26 @@ export interface Composition extends CompositionWithText {
 
 export interface CompositionsEndpoint {
   getAllByEdition: (editionId: string) => Promise<CompositionListItem[]>;
-  getAllByEditionWithText: (editionId: string, textKey: string) => Promise<CompositionWithText[]>;
-  getAllByEditionAndType: (editionId: string, typeId: string) => Promise<CompositionListItem[]>;
-  getAllByEditionAndTypeWithText: (editionId: string, typeId: string, textKey: string) => Promise<CompositionWithText[]>;
-  getAllByEditionSection: (editionSectionId: string) => Promise<CompositionListItem[]>;
-  getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => Promise<CompositionWithText[]>;
+  getAllByEditionWithText: (
+    editionId: string,
+    textKey: string,
+  ) => Promise<CompositionWithText[]>;
+  getAllByEditionAndType: (
+    editionId: string,
+    typeId: string,
+  ) => Promise<CompositionListItem[]>;
+  getAllByEditionAndTypeWithText: (
+    editionId: string,
+    typeId: string,
+    textKey: string,
+  ) => Promise<CompositionWithText[]>;
+  getAllByEditionSection: (
+    editionSectionId: string,
+  ) => Promise<CompositionListItem[]>;
+  getAllByEditionSectionWithText: (
+    editionSectionId: string,
+    textKey: string,
+  ) => Promise<CompositionWithText[]>;
   getById: (compositionId: string) => Promise<Composition>;
 }
 
@@ -211,29 +217,42 @@ export interface CompositionsEndpoint {
  * @param client - The ofetch client instance
  * @returns Object with compositions endpoint methods
  */
-export function createCompositionsEndpoint(client: $Fetch): CompositionsEndpoint {
+export function createCompositionsEndpoint(
+  client: $Fetch,
+): CompositionsEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<CompositionListItem[]>(`/editions/${editionId}/compositions`);
-    },
-    getAllByEditionWithText: (editionId: string, textKey: string) => {
-      return client<CompositionWithText[]>(`/editions/${editionId}/compositions/text?key=${textKey}`);
-    },
-    getAllByEditionAndType: (editionId: string, typeId: string) => {
-      return client<CompositionListItem[]>(`/editions/${editionId}/compositions/${typeId}`);
-    },
-    getAllByEditionAndTypeWithText: (editionId: string, typeId: string, textKey: string) => {
-      return client<CompositionWithText[]>(`/editions/${editionId}/compositions/${typeId}/text?key=${textKey}`);
-    },
-    getAllByEditionSection: (editionSectionId: string) => {
-      return client<CompositionListItem[]>(`/editionsections/${editionSectionId}/compositions`);
-    },
-    getAllByEditionSectionWithText: (editionSectionId: string, textKey: string) => {
-      return client<CompositionWithText[]>(`/editionsections/${editionSectionId}/compositions/text?key=${textKey}`);
-    },
-    getById: (compositionId: string) => {
-      return client<Composition>(`/compositions/${compositionId}`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<CompositionListItem[]>(
+        `/editions/${editionId}/compositions`,
+      ),
+    getAllByEditionWithText: async (editionId: string, textKey: string) =>
+      await client<CompositionWithText[]>(
+        `/editions/${editionId}/compositions/text?key=${textKey}`,
+      ),
+    getAllByEditionAndType: async (editionId: string, typeId: string) =>
+      await client<CompositionListItem[]>(
+        `/editions/${editionId}/compositions/${typeId}`,
+      ),
+    getAllByEditionAndTypeWithText: async (
+      editionId: string,
+      typeId: string,
+      textKey: string,
+    ) =>
+      await client<CompositionWithText[]>(
+        `/editions/${editionId}/compositions/${typeId}/text?key=${textKey}`,
+      ),
+    getAllByEditionSection: async (editionSectionId: string) =>
+      await client<CompositionListItem[]>(
+        `/editionsections/${editionSectionId}/compositions`,
+      ),
+    getAllByEditionSectionWithText: async (
+      editionSectionId: string,
+      textKey: string,
+    ) =>
+      await client<CompositionWithText[]>(
+        `/editionsections/${editionSectionId}/compositions/text?key=${textKey}`,
+      ),
+    getById: async (compositionId: string) =>
+      await client<Composition>(`/compositions/${compositionId}`),
   };
 }
-

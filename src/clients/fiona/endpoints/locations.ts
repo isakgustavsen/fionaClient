@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface ContactDetail {
   id: string;
@@ -64,20 +64,14 @@ export interface Location {
   abbreviation: string;
   capacity?: number;
   contactDetails: ContactDetail[];
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
   favoriteImageAttachmentId?: string | null;
   favoritePreviewAttachmentId?: string | null;
   isOnline: boolean;
   name: string;
   parentLocation?: ParentLocation | null;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   type: LocationType;
 }
 
@@ -93,12 +87,8 @@ export interface LocationsEndpoint {
  */
 export function createLocationsEndpoint(client: $Fetch): LocationsEndpoint {
   return {
-    getAll: () => {
-      return client<Location[]>('/locations');
-    },
-    getById: (locationId: string) => {
-      return client<Location>(`/locations/${locationId}`);
-    },
+    getAll: async () => await client<Location[]>("/locations"),
+    getById: async (locationId: string) =>
+      await client<Location>(`/locations/${locationId}`),
   };
 }
-

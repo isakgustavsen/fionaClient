@@ -1,4 +1,5 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
+import type { IdDescription } from "../../xapi-fiona/types/shared";
 
 export interface ScheduleType {
   key: string;
@@ -233,31 +234,6 @@ export interface ShowSection {
   name: string;
 }
 
-export interface ShowEdition {
-  id: string;
-  description: string;
-}
-
-export interface ShowSchedule {
-  id: string;
-  description: string;
-}
-
-export interface ShowLocation {
-  id: string;
-  abbreviation: string;
-  description: string;
-  isOnline: boolean;
-}
-
-export interface Show {
-  id: string;
-  fullTitle: string;
-  location: ShowLocation;
-  sortedTitle: string;
-  startOn: string;
-}
-
 export interface DetailedShow extends Show {
   documentVersion?: string | null;
   publishedOn?: string;
@@ -271,13 +247,9 @@ export interface DetailedShow extends Show {
     }>;
   };
   capacity?: number;
-  customFieldValues: Array<{
-    [key: string]: unknown;
-  }>;
-  customFieldOptions: Array<{
-    [key: string]: unknown;
-  }>;
-  edition: ShowEdition;
+  customFieldValues: Array<Record<string, unknown>>;
+  customFieldOptions: Array<Record<string, unknown>>;
+  edition: IdDescription;
   endOn: string;
   filmRatings: Array<{
     key: string;
@@ -302,9 +274,7 @@ export interface DetailedShow extends Show {
     startDate: string;
   }>;
   hasAudienceVoting: boolean;
-  image?: {
-    [key: string]: unknown;
-  };
+  image?: Record<string, unknown>;
   isOfficialSelection: boolean;
   isPremiere: boolean;
   isVideoOnDemand: boolean;
@@ -315,28 +285,18 @@ export interface DetailedShow extends Show {
   parentShow?: string;
   publicationContextShowPart?: string;
   publicationContextType: number;
-  publications: Array<{
-    [key: string]: unknown;
-  }>;
+  publications: Array<Record<string, unknown>>;
   publish: boolean;
   reservedSeatsForAccreditedGuests: number;
-  schedule: ShowSchedule;
-  section?: {
-    id: string;
-    description: string;
-  };
+  schedule: IdDescription;
+  section?: IdDescription;
   sections: ShowSection[];
   showParts: ShowPart[];
   showPartsAll: ShowPart[];
   sortedTitle: string;
-  sourceComposition?: {
-    id: string;
-    description: string;
-  };
+  sourceComposition?: IdDescription;
   startOn: string;
-  texts: Array<{
-    [key: string]: unknown;
-  }>;
+  texts: Array<Record<string, unknown>>;
   ticketDeskNotes?: string;
   ticketSaleId?: string;
   type: {
@@ -354,10 +314,18 @@ export interface DetailedShow extends Show {
 
 export interface SchedulesEndpoint {
   getAllByEdition: (editionId: string) => Promise<Schedule[]>;
-  getAllByEditionAndType: (editionId: string, typeId: string) => Promise<Schedule[]>;
+  getAllByEditionAndType: (
+    editionId: string,
+    typeId: string,
+  ) => Promise<Schedule[]>;
   getById: (scheduleId: string) => Promise<DetailedSchedule>;
   getShowsBySchedule: (scheduleId: string) => Promise<Show[]>;
-  getShowsByScheduleAndDate: (scheduleId: string, year: number, month: number, day: number) => Promise<Show[]>;
+  getShowsByScheduleAndDate: (
+    scheduleId: string,
+    year: number,
+    month: number,
+    day: number,
+  ) => Promise<Show[]>;
   getShowsByEdition: (editionId: string) => Promise<Show[]>;
   getShowById: (showId: string) => Promise<DetailedShow>;
   getShowByIdWithAllParts: (showId: string) => Promise<DetailedShow>;
@@ -370,30 +338,28 @@ export interface SchedulesEndpoint {
  */
 export function createSchedulesEndpoint(client: $Fetch): SchedulesEndpoint {
   return {
-    getAllByEdition: (editionId: string) => {
-      return client<Schedule[]>(`/editions/${editionId}/schedules`);
-    },
-    getAllByEditionAndType: (editionId: string, typeId: string) => {
-      return client<Schedule[]>(`/editions/${editionId}/schedules/${typeId}`);
-    },
-    getById: (scheduleId: string) => {
-      return client<DetailedSchedule>(`/schedules/${scheduleId}`);
-    },
-    getShowsBySchedule: (scheduleId: string) => {
-      return client<Show[]>(`/schedules/${scheduleId}/shows`);
-    },
-    getShowsByScheduleAndDate: (scheduleId: string, year: number, month: number, day: number) => {
-      return client<Show[]>(`/schedules/${scheduleId}/shows/${year}/${month}/${day}`);
-    },
-    getShowsByEdition: (editionId: string) => {
-      return client<Show[]>(`/editions/${editionId}/shows`);
-    },
-    getShowById: (showId: string) => {
-      return client<DetailedShow>(`/shows/${showId}`);
-    },
-    getShowByIdWithAllParts: (showId: string) => {
-      return client<DetailedShow>(`/shows/${showId}?all-showparts=true`);
-    },
+    getAllByEdition: async (editionId: string) =>
+      await client<Schedule[]>(`/editions/${editionId}/schedules`),
+    getAllByEditionAndType: async (editionId: string, typeId: string) =>
+      await client<Schedule[]>(`/editions/${editionId}/schedules/${typeId}`),
+    getById: async (scheduleId: string) =>
+      await client<DetailedSchedule>(`/schedules/${scheduleId}`),
+    getShowsBySchedule: async (scheduleId: string) =>
+      await client<Show[]>(`/schedules/${scheduleId}/shows`),
+    getShowsByScheduleAndDate: async (
+      scheduleId: string,
+      year: number,
+      month: number,
+      day: number,
+    ) =>
+      await client<Show[]>(
+        `/schedules/${scheduleId}/shows/${year}/${month}/${day}`,
+      ),
+    getShowsByEdition: async (editionId: string) =>
+      await client<Show[]>(`/editions/${editionId}/shows`),
+    getShowById: async (showId: string) =>
+      await client<DetailedShow>(`/shows/${showId}`),
+    getShowByIdWithAllParts: async (showId: string) =>
+      await client<DetailedShow>(`/shows/${showId}?all-showparts=true`),
   };
 }
-

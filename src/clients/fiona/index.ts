@@ -1,26 +1,26 @@
-import { createBaseClient } from '../../core/base-client';
-import { createMutationsEndpoint } from './endpoints/mutations';
-import { createEditionTypesEndpoint } from './endpoints/edition-types';
-import { createEditionsEndpoint } from './endpoints/editions';
-import { createEditionSectionsEndpoint } from './endpoints/edition-sections';
-import { createFilmsEndpoint } from './endpoints/films';
-import { createPerformancesEndpoint } from './endpoints/performances';
-import { createCompositionsEndpoint } from './endpoints/compositions';
-import { createLocationsEndpoint } from './endpoints/locations';
-import { createSchedulesEndpoint } from './endpoints/schedules';
-import { createPersonsEndpoint } from './endpoints/persons';
-import { createCompaniesEndpoint } from './endpoints/companies';
-import { createGuestbooksEndpoint } from './endpoints/guestbooks';
-import { createVolunteersEndpoint } from './endpoints/volunteers';
-import { createLookupsEndpoint } from './endpoints/lookups';
-import { createAttachmentsEndpoint } from './endpoints/attachments';
-import type { FionaOptions } from './types';
+import type { FionaOptions, FionaClient } from "./types";
+import { createBaseClient } from "../../core/base-client";
+import { createAttachmentsEndpoint } from "./endpoints/attachments";
+import { createCompaniesEndpoint } from "./endpoints/companies";
+import { createCompositionsEndpoint } from "./endpoints/compositions";
+import { createEditionSectionsEndpoint } from "./endpoints/edition-sections";
+import { createEditionTypesEndpoint } from "./endpoints/edition-types";
+import { createEditionsEndpoint } from "./endpoints/editions";
+import { createFilmsEndpoint } from "./endpoints/films";
+import { createGuestbooksEndpoint } from "./endpoints/guestbooks";
+import { createLocationsEndpoint } from "./endpoints/locations";
+import { createLookupsEndpoint } from "./endpoints/lookups";
+import { createMutationsEndpoint } from "./endpoints/mutations";
+import { createPerformancesEndpoint } from "./endpoints/performances";
+import { createPersonsEndpoint } from "./endpoints/persons";
+import { createSchedulesEndpoint } from "./endpoints/schedules";
+import { createVolunteersEndpoint } from "./endpoints/volunteers";
 
-export function createFiona(options: FionaOptions) {
+export function createFiona(options: FionaOptions): FionaClient {
   const client = createBaseClient({
     baseUrl: options.baseUrl,
     key: options.key,
-    authHeader: 'apikey',
+    authHeader: "apikey",
   });
 
   const mutations = createMutationsEndpoint(client);
@@ -58,5 +58,4 @@ export function createFiona(options: FionaOptions) {
   };
 }
 
-export type { FionaOptions } from './types';
-
+export type { FionaOptions } from "./types";

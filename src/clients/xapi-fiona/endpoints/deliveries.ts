@@ -1,65 +1,26 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
-// Delivery type reference
-export interface DeliveryType {
-  id: string;
-  description: string;
-}
-
-// Delivery status reference
-export interface DeliveryStatus {
-  id: string;
-  description: string;
-}
-
-// Film reference (shared with other endpoints)
-export interface FilmReference {
-  id: string;
-  description: string;
-}
-
-// Delivery request for type (for FilmFetch deliveries)
-export interface DeliveryRequestForType {
-  id: string;
-  description: string;
-}
-
-// Content type reference (shared with attachments)
-export interface ContentType {
-  id: string;
-  description: string;
-}
-
-// Base Delivery interface
-export interface Delivery {
-  id: string;
-  status: DeliveryStatus;
-  type: DeliveryType;
-  film: FilmReference;
-  requestForType?: DeliveryRequestForType | null;
-  contentType?: ContentType | null;
-  remarks?: string;
-  externalTag?: string;
-  url?: string;
-}
-
-// List item version (for array responses)
-export interface DeliveryListItem {
-  id: string;
-  description: string;
-}
+import type { Delivery } from "../types/deliveries";
+import type { IdDescription } from "../types/shared";
 
 // Deliveries endpoint interface
 export interface DeliveriesEndpoint {
   // Get deliveries by edition, type, and status
-  getByEdition: (editionId: string, deliveryTypeId: string, deliveryStatusId: string) => Promise<DeliveryListItem[]>;
+  getByEdition: (
+    editionId: string,
+    deliveryTypeId: string,
+    deliveryStatusId: string,
+  ) => Promise<IdDescription[]>;
 
   // Get all deliveries for a film
-  getByFilm: (filmId: string) => Promise<DeliveryListItem[]>;
+  getByFilm: (filmId: string) => Promise<IdDescription[]>;
 
   // CRUD operations for individual deliveries
   getById: (deliveryId: string) => Promise<Delivery>;
-  updateById: (deliveryId: string, delivery: Partial<Delivery>) => Promise<Delivery>;
+  updateById: (
+    deliveryId: string,
+    delivery: Partial<Delivery>,
+  ) => Promise<Delivery>;
   deleteById: (deliveryId: string) => Promise<void>;
 }
 
@@ -71,30 +32,32 @@ export interface DeliveriesEndpoint {
 export function createDeliveriesEndpoint(client: $Fetch): DeliveriesEndpoint {
   return {
     // Get deliveries by edition, type, and status
-    getByEdition: (editionId: string, deliveryTypeId: string, deliveryStatusId: string) => {
-      return client<DeliveryListItem[]>(`/edition/${editionId}/deliveries/${deliveryTypeId}/${deliveryStatusId}`);
-    },
+    getByEdition: async (
+      editionId: string,
+      deliveryTypeId: string,
+      deliveryStatusId: string,
+    ) =>
+      await client<IdDescription[]>(
+        `/edition/${editionId}/deliveries/${deliveryTypeId}/${deliveryStatusId}`,
+      ),
 
     // Get all deliveries for a film
-    getByFilm: (filmId: string) => {
-      return client<DeliveryListItem[]>(`/film/${filmId}/deliveries`);
-    },
+    getByFilm: async (filmId: string) =>
+      await client<IdDescription[]>(`/film/${filmId}/deliveries`),
 
     // CRUD operations for individual deliveries
-    getById: (deliveryId: string) => {
-      return client<Delivery>(`/delivery/${deliveryId}`);
-    },
+    getById: async (deliveryId: string) =>
+      await client<Delivery>(`/delivery/${deliveryId}`),
 
-    updateById: (deliveryId: string, delivery: Partial<Delivery>) => {
-      return client<Delivery>(`/delivery/${deliveryId}`, {
-        method: 'POST',
+    updateById: async (deliveryId: string, delivery: Partial<Delivery>) =>
+      await client<Delivery>(`/delivery/${deliveryId}`, {
+        method: "POST",
         body: delivery,
-      });
-    },
+      }),
 
-    deleteById: (deliveryId: string) => {
-      return client<void>(`/delivery/${deliveryId}`, {
-        method: 'DELETE',
+    deleteById: async (deliveryId: string) => {
+      await client<unknown>(`/delivery/${deliveryId}`, {
+        method: "DELETE",
       });
     },
   };

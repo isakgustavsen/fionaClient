@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
 
 export interface EditionType {
   id: string;
@@ -31,12 +31,11 @@ export interface EditionsEndpoint {
  */
 export function createEditionsEndpoint(client: $Fetch): EditionsEndpoint {
   return {
-    getAllByEditionType: (editionTypeId: string) => {
-      return client<EditionListItem[]>(`/editiontypes/${editionTypeId}/editions`);
-    },
-    getById: (editionId: string) => {
-      return client<Edition>(`/editions/${editionId}`);
-    },
+    getAllByEditionType: async (editionTypeId: string) =>
+      await client<EditionListItem[]>(
+        `/editiontypes/${editionTypeId}/editions`,
+      ),
+    getById: async (editionId: string) =>
+      await client<Edition>(`/editions/${editionId}`),
   };
 }
-

@@ -1,5 +1,5 @@
-import { ofetch } from 'ofetch';
-import type { $Fetch } from 'ofetch';
+import type { $Fetch } from "ofetch";
+import { ofetch } from "ofetch";
 
 export interface BaseClientOptions {
   baseUrl: string;
@@ -12,8 +12,7 @@ export function createBaseClient(options: BaseClientOptions): $Fetch {
     baseURL: options.baseUrl,
     headers: {
       [options.authHeader]: options.key,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 }
-
