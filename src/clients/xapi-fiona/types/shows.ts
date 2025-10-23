@@ -28,7 +28,8 @@ export interface ShowDetail {
   sections?: IdDescription[];
   sourceComposition?: IdDescription | null;
   startOn: string;
-  tags?: unknown[];
+  //this array will always be empty, but the type is required
+  tags?: [];
   technicalRemarks?: string | null;
   ticketSaleId?: string | null;
   title: string;
