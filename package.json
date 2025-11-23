@@ -1,7 +1,7 @@
 {
   "name": "fiona-client",
   "type": "module",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "packageManager": "pnpm@10.18.1",
   "description": "HTTP client wrapper around Fiona APIs",
   "author": "Isak Gustavsen",
